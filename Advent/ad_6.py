@@ -9,9 +9,16 @@ GRID_SHIFT = 1
 
 
 class LightGrid(object):
-    def __init__(self, sizes=(1000, 1000)):
+    def __init__(self, task_type='SILVER', sizes=(1000, 1000)):
         self.sizes = sizes
         self.grid = [False] * sizes[0] * sizes[1]  # Everything is turned off
+        if task_type == 'SILVER':
+            self.choose_command = choose_command_silver
+        elif task_type == 'GOLD':
+            self.choose_command = choose_command_gold
+        else:
+            print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
+            # Put some stub here as well!
 
     def edit_square(self, coordinates, operation):
         # Coordinates have ((x, y), (x, y)) format
@@ -32,7 +39,7 @@ class LightGrid(object):
 
     def follow_instruction(self, instruction):
         parsed_instruction = parse_instruction(instruction)
-        operation = choose_command(parsed_instruction[0])
+        operation = self.choose_command(parsed_instruction[0])
         coordinates = (parsed_instruction[1], parsed_instruction[2])
         self.edit_square(coordinates, operation)
 
@@ -43,10 +50,7 @@ class LightGrid(object):
         return lit_count
 
 
-def parse_instruction(string):  # TODO: add some more format checks (?)
-    #  turn off 660,55 through 986,197
-    #  toggle 537,781 through 687,941
-    #  turn on 226,196 through 599,390 TODO: use "try - except" here
+def parse_instruction(string):  # TODO: use "try - except" here
     instruction = string.split(" ")
     if instruction[0] == 'toggle':
         return pack_instruction(instruction, ONE_WORD)  # Command is one word long
@@ -65,32 +69,54 @@ def pack_instruction(instruction, command_word_count):
     return command, point_1, point_2
 
 
-def choose_command(command):
+def choose_command_silver(command):
     if command == 'on':
-        return true_stub
+        return on_silver
     elif command == 'off':
-        return false_stub
+        return off_silver
     else:
-        return toggle
+        return toggle_silver
 
 
-def toggle(bool_element):
+def choose_command_gold(command):  # TODO: repetition! Such repetition!
+    if command == 'on':
+        return on_gold
+    elif command == 'off':
+        return off_gold
+    else:
+        return toggle_gold
+
+
+def toggle_silver(bool_element):
     return not bool_element
 
 
-def false_stub(some_element):
+def off_silver(stub):
     return False
 
 
-def true_stub(some_element):
+def on_silver(stub):
     return True
+
+
+def toggle_gold(brightness):
+    return brightness + 2
+
+
+def off_gold(brightness):
+    return 0 if brightness < 2 else brightness - 1
+
+
+def on_gold(brightness):
+    return brightness + 1
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', action='store', dest='file_name')
+    parser.add_argument('-t', action='store', dest='task_type')
     args = parser.parse_args()
-    grid = LightGrid()
+    grid = LightGrid(args.task_type)
     grid.parse_instruction_file(args.file_name)
     print grid.count_lit()
 
