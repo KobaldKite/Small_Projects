@@ -5,6 +5,7 @@ ONE_WORD = 1
 TWO_WORDS = 2
 COMMAND_SHIFT_1 = -1
 COMMAND_SHIFT_2 = 2
+GRID_SHIFT = 1
 
 
 class LightGrid(object):
@@ -14,10 +15,10 @@ class LightGrid(object):
 
     def edit_square(self, coordinates, operation):
         # Coordinates have ((x, y), (x, y)) format
-        point_1, point_2 = coordinates  # TODO: Letters instead of "words" here! D:
-        for y in xrange(point_1[1], point_2[1]):
+        point_1, point_2 = coordinates
+        for y in xrange(point_1[1], point_2[1] + GRID_SHIFT):
             for element in xrange(y * self.sizes[0] + point_1[0],
-                                  y * self.sizes[0] + point_2[0]):
+                                  y * self.sizes[0] + point_2[0] + GRID_SHIFT):
                 self.grid[element] = operation(self.grid[element])
 
     def parse_instruction_file(self, file_name):
@@ -39,7 +40,7 @@ class LightGrid(object):
         lit_count = 0
         for element in self.grid:
             lit_count += element
-        print lit_count
+        return lit_count
 
 
 def parse_instruction(string):  # TODO: add some more format checks (?)
@@ -91,7 +92,7 @@ def main():
     args = parser.parse_args()
     grid = LightGrid()
     grid.parse_instruction_file(args.file_name)
-    grid.count_lit()
+    print grid.count_lit()
 
 
 if __name__ == '__main__':
