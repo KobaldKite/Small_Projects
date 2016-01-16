@@ -1,46 +1,31 @@
 import unittest
-import argparse
-import subprocess
 import ad_1
 
 
-class TestArguments(unittest.TestCase):
-    pass
+TASKS = {
+    'SILVER': 1,
+    'GOLD': 2
+}
+
+DIRECTIONS_SAMPLES = (
+    ('(())())(', 0, -1),         # Location = 0, cellar = -1 (never)
+    ('((())())())()', 1, 13),    # Location = 1, cellar = 13 (last)
+    (')()()(', 0, 1),            # Location = 0, cellar = 1 (first)
+    ('(((()((', 5, -1)           # Location = 5, cellar = -1 (never)
+)
 
 
-class TestFileWork(unittest.TestCase):
-    # Create a string
-    # Create a file
-    # Write string to the file
-    # Read the file
-    # Compare strings
-    # ----- does it sound fair?
-    pass
+class TestDirections(unittest.TestCase):
+    def check(self, task_type):
+        self.santa = ad_1.Santa(task_type)
+        for sample in DIRECTIONS_SAMPLES:
+            self.assertEqual(self.santa.follow_directions(sample[0]),
+                             sample[TASKS[task_type]])
+
+    def test_directions(self):
+        self.check('SILVER')
+        self.check('GOLD')
 
 
-class TestSymbolParse(unittest.TestCase):
-    # Mostly several cases with different results. Use StringIO here?
-    def create_test_file(self, test_string):
-        with open('test_file', 'w') as test_file:
-            test_file.write(test_string)
-
-    def test_ground_levels(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-f', action='store', dest='file_path', default='')
-        parser.add_argument('-t', action='store', dest='type', default='SILVER')
-        args = parser.parse_args(['-f', 'test_file'])
-
-        # Above ground
-        self.create_test_file('((()(()(')
-        santa = ad_1.Santa(args)
-        santa.follow_directions()
-
-        process = subprocess.Popen(['echo', '"Hello!"'], stdout=subprocess.PIPE)  # Change [.] to the function run?
-        line = process.stdout.readline()
-        print line
-
-        # Ground floor
-        # Under ground
-        pass
-
-    pass
+if __name__ == '__main__':
+    unittest.main()

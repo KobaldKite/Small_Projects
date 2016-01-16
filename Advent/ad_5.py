@@ -5,14 +5,19 @@ BAD_SUBSTRINGS = ('ab', 'cd', 'pq', 'xy')
 VOWELS = ('a', 'e', 'i', 'o', 'u')
 STRING_SHIFT = 1
 
+TASK_TYPE = (
+    'SILVER',
+    'GOLD'
+)
+
 
 def file_analyze(filename, task_type):
-    with open(filename, 'r') as input_file:
+    with open(filename, 'r') as input_file:  # TODO: Wouldn't it be better to read files separately?
         nice_count = 0
-        if task_type == 'SILVER':
+        if task_type == TASK_TYPE[0]:
             for line in input_file:
                 nice_count += full_check_silver(line)
-        elif task_type == 'GOLD':
+        elif task_type == TASK_TYPE[1]:
             for line in input_file:
                 nice_count += full_check_gold(line)
         else:
@@ -84,5 +89,5 @@ def main():
     file_analyze(args.file_name, args.task_type)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # TESTED AND WORKS
     main()

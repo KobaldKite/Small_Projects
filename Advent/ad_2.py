@@ -1,13 +1,13 @@
 import argparse
 
 
-TYPE = [
+TYPE = (
     'SILVER',
     'GOLD'
-]
+)
 
 
-def wrap_boxes(args):
+def wrap_boxes(args):  # TODO: wouldn't it be better to read everything and work with it later?
     wrap_function = wrap_manager(args.task_type)
     with open(args.file_path, 'r') as input_file:
         material = 0
@@ -18,19 +18,20 @@ def wrap_boxes(args):
 
 
 def wrap_manager(task_type):
-    if task_type == 'SILVER':
+    if task_type == TYPE[0]:
         return wrap_paper
-    elif task_type == 'GOLD':
+    elif task_type == TYPE[1]:
         return wrap_ribbon
     else:
         print 'Wrong task type. Please use "GOLD" or "SILVER".'
+        # Throw some error!
         return sum  # A bad stub
 
 
 def wrap_paper(sizes):
     sides = [sizes[0] * sizes[1],
              sizes[0] * sizes[2],
-             sizes[1] * sizes[2]]  # Bad implementation. Sum all pairs of multiplications instead.
+             sizes[1] * sizes[2]]
     result = sum([2 * side for side in sides]) + min(sides)
     return result
 

@@ -1,41 +1,40 @@
 import argparse
 
 
-TYPE = [
+TYPE = (
     'SILVER',
     'GOLD'
-]
+)
 
 
 class Santa(object):
-    def __init__(self, args):
-        self.task_type = args.task_type
-        self.file_path = args.file_path  # Move it out of here?
+    def __init__(self, task_type=TYPE[0]):
+        self.task_type = task_type
         self.directions_taken = 0
         self.location = 0
-        self.directions = self.get_directions_from_file()
 
-    def get_directions_from_file(self):
-        with open(self.file_path, 'r') as input_file:
-            return input_file.read().strip("\n")
+    def do_the_job(self, file_path):
+        directions = parse_instruction_file(file_path)
+        return self.follow_directions(directions)
 
-    def follow_directions(self):
-        if self.task_type == 'SILVER':
-            self.follow_directions_silver()
-        elif self.task_type == 'GOLD':
-            self.follow_directions_gold()
+    def follow_directions(self, directions):
+        if self.task_type == TYPE[0]:
+            return self.follow_directions_silver(directions)
+        elif self.task_type == TYPE[1]:
+            return self.follow_directions_gold(directions)
         else:
             print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
 
-    def follow_directions_silver(self):
-        for direction in self.directions:
-            self.follow_direction(direction)
+    def follow_directions_silver(self, directions):
+        for direction in directions:
+            return self.follow_direction(direction)
 
-    def follow_directions_gold(self):
-        for direction in self.directions:
+    def follow_directions_gold(self, directions):
+        for direction in directions:
             self.follow_direction(direction)
             if self.check_cellar():
-                break
+                return self.directions_taken
+        return -1
 
     def follow_direction(self, direction):
         self.directions_taken += 1
@@ -48,8 +47,12 @@ class Santa(object):
 
     def check_cellar(self):
         if self.location < 0:
-            print self.directions_taken
             return self.directions_taken
+
+
+def parse_instruction_file(file_path):
+    with open(file_path, 'r') as input_file:
+        return input_file.read().strip("\n")
 
 
 def main():
@@ -57,8 +60,8 @@ def main():
     parser.add_argument('-f', action='store', dest='file_path', default='')
     parser.add_argument('-t', action='store', dest='task_type', default='SILVER')
     args = parser.parse_args()
-    santa = Santa(args)
-    santa.follow_directions()
+    santa = Santa(args.task_type)
+    print santa.do_the_job(args.file_path)
 
 
 if __name__ == '__main__':  # TESTED AND WORKS

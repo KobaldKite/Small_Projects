@@ -7,14 +7,25 @@ COMMAND_SHIFT_1 = -1
 COMMAND_SHIFT_2 = 2
 GRID_SHIFT = 1
 
+TASK_TYPE = (
+    'SILVER',
+    'GOLD'
+)
+
+COMMAND = (
+    'on',
+    'off',
+    'toggle'
+)
+
 
 class LightGrid(object):
-    def __init__(self, task_type='SILVER', sizes=(1000, 1000)):
+    def __init__(self, task_type=TASK_TYPE[0], sizes=(1000, 1000)):
         self.sizes = sizes
         self.grid = [False] * sizes[0] * sizes[1]  # Everything is turned off
-        if task_type == 'SILVER':
+        if task_type == TASK_TYPE[0]:
             self.choose_command = choose_command_silver
-        elif task_type == 'GOLD':
+        elif task_type == TASK_TYPE[1]:
             self.choose_command = choose_command_gold
         else:
             print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
@@ -75,7 +86,7 @@ def choose_command_silver(command):
     elif command == 'off':
         return off_silver
     else:
-        return toggle_silver
+        return toggle_silver # TODO: add one more "elif"!
 
 
 def choose_command_gold(command):  # TODO: repetition! Such repetition!
