@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 
@@ -7,25 +8,37 @@ TYPE = (
 )
 
 
-def wrap_boxes(args):  # TODO: wouldn't it be better to read everything and work with it later?
-    wrap_function = wrap_manager(args.task_type)
-    with open(args.file_path, 'r') as input_file:
-        material = 0
-        for line in input_file:
-            sizes = [int(size) for size in line.split('x')]
-            material += wrap_function(sizes)
-    print material
+def parse_size_file(file_path):
+    with open(file_path, 'r') as input_file:
+        string_list = input_file.read().strip('\n').split('\n')
+        sizes_list = [[int(size) for size in line.split('x')] for line in string_list]
+        return sizes_list
 
 
-def wrap_manager(task_type):
+def wrap_boxes(size_list, task_type=TYPE[0]):
+    material = 0
+    for sizes in size_list:
+        material += wrap_function(sizes, task_type)
+    return material
+
+
+def wrap_function(sizes, task_type=TYPE[0]):
+    if check_sense(sizes) == -1:
+        return 0
     if task_type == TYPE[0]:
-        return wrap_paper
+        return wrap_paper(sizes)
     elif task_type == TYPE[1]:
-        return wrap_ribbon
+        return wrap_ribbon(sizes)
     else:
-        print 'Wrong task type. Please use "GOLD" or "SILVER".'
-        # Throw some error!
-        return sum  # A bad stub
+        sys.exit('Wrong task type. Please use "GOLD" or "SILVER".')
+
+
+def check_sense(sizes):
+    for size in sizes:
+        if size <= 0:
+            print 'Some dimensions are negative. Such boxes will be ignored.'
+            return -1
+    return 0
 
 
 def wrap_paper(sizes):
@@ -50,8 +63,9 @@ def main():
     parser.add_argument('-f', action='store', dest='file_path')
     parser.add_argument('-t', action='store', dest='task_type', default='SILVER')
     args = parser.parse_args()
-    wrap_boxes(args)
+    sizes_list = parse_size_file(args.file_path)
+    print wrap_boxes(sizes_list, args.task_type)
 
 
-if __name__ == '__main__':  # TESTED AND WORKS
+if __name__ == '__main__':
     main()
