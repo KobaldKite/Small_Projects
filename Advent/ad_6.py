@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 
@@ -28,8 +29,7 @@ class LightGrid(object):
         elif task_type == TASK_TYPE[1]:
             self.choose_command = choose_command_gold
         else:
-            print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
-            # Put some stub here as well!
+            sys.exit('Wrong task type. Please use "GOLD" or "SILVER".')
 
     def edit_square(self, coordinates, operation):
         # Coordinates have ((x, y), (x, y)) format
@@ -68,7 +68,7 @@ def parse_instruction(string):  # TODO: use "try - except" here
     elif instruction[0] == 'turn':
         return pack_instruction(instruction, TWO_WORDS)  # Command is two words long
     else:
-        print 'Wrong file format.'
+        sys.exit('Wrong file format.')
 
 
 def pack_instruction(instruction, command_word_count):
@@ -85,8 +85,10 @@ def choose_command_silver(command):
         return on_silver
     elif command == 'off':
         return off_silver
+    elif command == 'toggle':
+        return toggle_silver
     else:
-        return toggle_silver # TODO: add one more "elif"!
+        sys.exit('Wrong file format.')
 
 
 def choose_command_gold(command):  # TODO: repetition! Such repetition!
@@ -94,8 +96,10 @@ def choose_command_gold(command):  # TODO: repetition! Such repetition!
         return on_gold
     elif command == 'off':
         return off_gold
-    else:
+    elif command == 'toggle':
         return toggle_gold
+    else:
+        sys.exit('Wrong file format.')
 
 
 def toggle_silver(bool_element):

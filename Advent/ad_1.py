@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 
@@ -23,11 +24,12 @@ class Santa(object):
         elif self.task_type == TYPE[1]:
             return self.follow_directions_gold(directions)
         else:
-            print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
+            sys.exit('Wrong task type. Please use "GOLD" or "SILVER".')
 
     def follow_directions_silver(self, directions):
         for direction in directions:
-            return self.follow_direction(direction)
+            self.follow_direction(direction)
+        return self.location
 
     def follow_directions_gold(self, directions):
         for direction in directions:
@@ -43,7 +45,7 @@ class Santa(object):
         elif direction == ')':
             self.location -= 1
         else:
-            print 'Some symbols are not parentheses!'
+            print 'Some symbols are not parentheses, they will be ignored.'
 
     def check_cellar(self):
         if self.location < 0:
@@ -64,6 +66,6 @@ def main():
     print santa.do_the_job(args.file_path)
 
 
-if __name__ == '__main__':  # TESTED AND WORKS
+if __name__ == '__main__':
     main()
 

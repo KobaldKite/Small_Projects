@@ -11,8 +11,12 @@ TYPE = (
 def parse_size_file(file_path):
     with open(file_path, 'r') as input_file:
         string_list = input_file.read().strip('\n').split('\n')
-        sizes_list = [[int(size) for size in line.split('x')] for line in string_list]
-        return sizes_list
+        try:
+            sizes_list = [[int(size) for size in line.split('x')] for line in string_list]
+        except ValueError:
+            print 'Not possible to convert data to integer!'
+        else:
+            return sizes_list
 
 
 def wrap_boxes(size_list, task_type=TYPE[0]):
@@ -23,7 +27,7 @@ def wrap_boxes(size_list, task_type=TYPE[0]):
 
 
 def wrap_function(sizes, task_type=TYPE[0]):
-    if check_sense(sizes) == -1:
+    if check_negative(sizes) == -1:
         return 0
     if task_type == TYPE[0]:
         return wrap_paper(sizes)
@@ -33,7 +37,7 @@ def wrap_function(sizes, task_type=TYPE[0]):
         sys.exit('Wrong task type. Please use "GOLD" or "SILVER".')
 
 
-def check_sense(sizes):
+def check_negative(sizes):
     for size in sizes:
         if size <= 0:
             print 'Some dimensions are negative. Such boxes will be ignored.'

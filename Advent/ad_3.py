@@ -10,12 +10,16 @@ TURN_SHIFT = -1
 
 
 def parse_direction(direction):
-    return {
-        '>': [0, 1],
-        '<': [0, -1],
-        '^': [1, 0],
-        'v': [-1, 0]
-    }[direction]  # TODO: Use 'get' here with some  default values
+    try:
+        return {
+            '>': [0, 1],
+            '<': [0, -1],
+            '^': [1, 0],
+            'v': [-1, 0]
+        }.get(direction)
+    except KeyError:
+        print 'Some directions are not clear.' \
+              'Please make sure directions are ^ > v <'
 
 
 class Santa(object):
@@ -24,29 +28,46 @@ class Santa(object):
         self.deliveries = [(0, 0), ]
 
     def move(self, direction):
-        self.location = tuple([sum(coordinates) for coordinates in zip(self.location, direction)])
+        self.location = tuple([sum(coordinates) for coordinates
+                               in zip(self.location, direction)])
         self.deliveries.append(self.location)
+
+    def get_delivery_list(self):
+        return self.deliveries
 
 
 class DeliveryPlan(object):
-    def __init__(self, args):
-        self.file_path = args.file_path
-        self.santa_count = TYPE[args.task_type]
-        with open(args.file_path, 'r') as input_file:
-            self.directions = input_file.read().strip("\n")
+    def __init__(self, task_type):
+        self.santa_count = TYPE[task_type]
+        self.santas = [Santa() for count in xrange(self.santa_count)]
 
-    def santa_job(self):
-        santas = [Santa() for count in xrange(self.santa_count)]
+    def do_the_job(self, file_path):
+        directions = parse_directions_file(file_path)
+        return self.follow_directions(directions)
+
+    def follow_directions(self, directions):
         turn = 0
-        for direction in self.directions:
-            santas[turn].move(parse_direction(direction))
-            if turn == self.santa_count + TURN_SHIFT:
-                turn = 0
-            else:
-                turn += 1
-        delivery_coverage = [delivery for santa in santas for delivery in santa.deliveries]
+        for direction in directions:
+            turn = self.follow_direction(direction, turn)
+        return self.count_deliveries()
+
+    def follow_direction(self, direction, turn):
+        self.santas[turn].move(parse_direction(direction))
+        if turn == self.santa_count + TURN_SHIFT:
+            return 0  # First Santa's turn (full circle)
+        else:
+            return turn + 1  # Next Santa's turn
+
+    def count_deliveries(self):
+        delivery_coverage = [delivery for santa in self.santas
+                             for delivery in santa.get_delivery_list()]
         delivery_count = len(set(delivery_coverage))
-        print delivery_count
+        return delivery_count
+
+
+def parse_directions_file(file_path):
+    with open(file_path, 'r') as input_file:
+        return input_file.read().strip("\n")
 
 
 def main():
@@ -54,9 +75,9 @@ def main():
     parser.add_argument('-f', action='store', dest='file_path')
     parser.add_argument('-t', action='store', dest='task_type', default='SILVER')
     args = parser.parse_args()
-    delivery_plan = DeliveryPlan(args)
-    delivery_plan.santa_job()
+    delivery_plan = DeliveryPlan(args.task_type)
+    print delivery_plan.do_the_job(args.file_path)
 
 
-if __name__ == '__main__':  # TESTED AND WORKS
+if __name__ == '__main__':
     main()
