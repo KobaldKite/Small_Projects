@@ -1,6 +1,8 @@
 import urllib
 import random
 import argparse
+import json
+import io
 
 
 AVAILABLE_ARTICLE_THEMES = [
@@ -25,7 +27,7 @@ SEARCH_TYPES = [
     'title_only',
     'title_and_text'
 ]
-ARTICLE_NUMBER = 10  # The total number of generated articles
+ARTICLE_NUMBER = 10  # The total number of generated articles (100 in final version?)
 MIN_TOPIC_NUMBER = 1  # Every article can have up to three themes
 MAX_TOPIC_NUMBER = 3
 PAGE_SHIFT = -1  # Required to find the right number of articles, used in list slices.
@@ -51,7 +53,7 @@ def pick_random_topics():
                                random.randint(MIN_TOPIC_NUMBER, MAX_TOPIC_NUMBER)))
 
 
-class ArticleDatabase:
+class ArticleDataBase:
     def __init__(self):
         self.json_data = {'articles':
                           [{'title': generate_title(),
@@ -60,19 +62,18 @@ class ArticleDatabase:
                            for topics in (pick_random_topics() for article_counter
                                           in xrange(ARTICLE_NUMBER))]}
 
-    def print_to_file(self, path='articles.json'):  # Use 'check' to print data in a simpler format..
-        pass  # No JSON so far
-        #with open(path, 'w') as json_file:
-        #    json.dump(self.json_data, json_file, ensure_ascii=False, encoding='utf-8')
+    def print_to_file(self, path='articles.json'):  # Use 'visual_check' to print data in a human readable format
+        data = json.dumps(self.json_data, ensure_ascii=False)
+        with io.open(path, 'w', encoding='utf8') as json_file:
+            json_file.write(data)
 
-    def check(self, path='test.txt'):  # Generates a file that helps me with debugging
-        with open(path, 'w') as test_file:
+    def visual_check(self, path='test.txt'):  # Generates a file that helps with debugging
+        with io.open(path, 'w', encoding='utf8') as test_file:
             for current_article in self.json_data.get('articles'):
                 test_file.write('\n'.join((current_article.get('title'),
                                            '\n'.join(current_article.get('topics')),
                                            current_article.get('text'),
-                                           '\n'))
-                                .encode('utf-8'))  # TODO: find a better way
+                                           '\n')))
 
     def output_articles(self, displayed_page=1, articles_per_page=1, path='console'):
         articles = self.json_data.get('articles')
@@ -84,7 +85,8 @@ class ArticleDatabase:
                 print current_article.get('topics')
                 print current_article.get('text')  # TODO: find a better way
         else:
-            self.check(path)  # Change to 'print_to_file' later
+            self.print_to_file(path)
+            #self.visual_check(path)
 
     def filter_titles(self, request, search_type):
         result = []
@@ -102,19 +104,27 @@ class ArticleDatabase:
             return []
 
 
-def main(args):
-    articles = ArticleDatabase()
-    articles.output_articles(int(args.displayed_page), int(args.articles_per_page), args.path)
-    articles.find_articles(args.request, args.search_type)
-
-
-if __name__ == '__main__':
+def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', action='store', dest='search_type', default='title_only')
     parser.add_argument('-p', action='store', dest='path', default='console')
     parser.add_argument('-r', action='store', dest='request', default='')
     parser.add_argument('-dp', action='store', dest='displayed_page', default='1')
     parser.add_argument('-ap', action='store', dest='articles_per_page', default='0')
-    arguments = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    arguments = parse_arguments()
     print arguments
-    main(arguments)
+
+    articles = ArticleDataBase()
+    articles.print_to_file()
+    articles.output_articles(int(arguments.displayed_page),
+                             int(arguments.articles_per_page),
+                             arguments.path)
+    articles.find_articles(arguments.request, arguments.search_type)
+
+
+if __name__ == '__main__':
+    main()
