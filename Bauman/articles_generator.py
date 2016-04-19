@@ -27,9 +27,8 @@ SEARCH_TYPES = [
     'title_only',
     'title_and_text'
 ]
-ARTICLE_NUMBER = 10  # The total number of generated articles (100 in final version?)
-MIN_TOPIC_NUMBER = 1  # Every article can have up to three themes
-MAX_TOPIC_NUMBER = 3
+MIN_TOPIC_NUMBER = 1
+MAX_TOPIC_NUMBER = 3  # Every article can have up to three themes
 PAGE_SHIFT = -1  # Required to find the right number of articles, used in list slices.
 
 
@@ -53,14 +52,21 @@ def pick_random_topics():
                                random.randint(MIN_TOPIC_NUMBER, MAX_TOPIC_NUMBER)))
 
 
+def write_to_html(article_list, path='selected_articles.html'):
+    with io.open('.'.join([path, 'html']), 'w',  encoding='utf8') as articles_file:
+        for article in article_list:
+            articles_file.write(''.join(['<h1>', article.get('title'), '</h1>']))
+            articles_file.write(''.join(['<div>', article.get('text'), '</div>']))
+
+
 class ArticleDataBase:
-    def __init__(self):
+    def __init__(self, article_number=10):
         self.json_data = {'articles':
                           [{'title': generate_title(),
                             'topics': topics,
                             'text': generate_article(topics)}
                            for topics in (pick_random_topics() for article_counter
-                                          in xrange(ARTICLE_NUMBER))]}
+                                          in xrange(article_number))]}
 
     def print_to_file(self, path='articles.json'):  # Use 'visual_check' to print data in a human readable format
         data = json.dumps(self.json_data, ensure_ascii=False)
@@ -83,10 +89,9 @@ class ArticleDataBase:
             for current_article in selected_articles:
                 print current_article.get('title')
                 print current_article.get('topics')
-                print current_article.get('text')  # TODO: find a better way
+                print current_article.get('text')
         else:
-            self.print_to_file(path)
-            #self.visual_check(path)
+            write_to_html(selected_articles, path)
 
     def filter_titles(self, request, search_type):
         result = []
@@ -106,6 +111,7 @@ class ArticleDataBase:
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-n', action='store', dest='article_number', default=10)
     parser.add_argument('-s', action='store', dest='search_type', default='title_only')
     parser.add_argument('-p', action='store', dest='path', default='console')
     parser.add_argument('-r', action='store', dest='request', default='')
@@ -118,7 +124,7 @@ def main():
     arguments = parse_arguments()
     print arguments
 
-    articles = ArticleDataBase()
+    articles = ArticleDataBase(arguments.article_number)
     articles.print_to_file()
     articles.output_articles(int(arguments.displayed_page),
                              int(arguments.articles_per_page),
