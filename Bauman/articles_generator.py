@@ -88,7 +88,6 @@ class ArticleDataBase:
         if path == 'console':
             for current_article in selected_articles:
                 print current_article.get('title')
-                print current_article.get('topics')
                 print current_article.get('text')
         else:
             write_to_html(selected_articles, path)
@@ -116,7 +115,7 @@ def parse_arguments():
     parser.add_argument('-p', action='store', dest='path', default='console')
     parser.add_argument('-r', action='store', dest='request', default='')
     parser.add_argument('-dp', action='store', dest='displayed_page', default='1')
-    parser.add_argument('-ap', action='store', dest='articles_per_page', default='0')
+    parser.add_argument('-ap', action='store', dest='articles_per_page', default='1')
     return parser.parse_args()
 
 
