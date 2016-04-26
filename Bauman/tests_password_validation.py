@@ -21,5 +21,11 @@ class TestGeneral(unittest.TestCase):
     def test_too_short(self):
         self.assertFalse(password_validation.validate('asD%%23'))
 
+    def test_several_problems(self):
+        self.assertFalse(password_validation.validate('asdASDasd'))
+
     def test_good_password(self):
         self.assertTrue(password_validation.validate('asdFG%%%123'))
+
+    def test_good_password_exact_length(self):
+        self.assertTrue(password_validation.validate('asdFG%12'))
