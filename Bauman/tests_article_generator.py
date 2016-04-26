@@ -46,7 +46,7 @@ class TestGeneral(unittest.TestCase):
             self.article_database.filter_titles('b', 'title_and_text'),
             ARTICLE_DATABASE.get('articles')[1:4])
 
-    def test_output_articles(self):  # TODO: Fix it! And fix main file as well!
+    def test_output_articles(self):
         self.article_database.json_data = ARTICLE_DATABASE
         self.article_database.output_articles(2, 2, self.file_path)
         with io.open(self.path_html) as html_file:

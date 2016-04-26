@@ -52,8 +52,8 @@ def pick_random_topics():
                                random.randint(MIN_TOPIC_NUMBER, MAX_TOPIC_NUMBER)))
 
 
-def write_to_html(article_list, path='selected_articles'):
-    with io.open('.'.join([path, 'html']), 'w',  encoding='utf8') as articles_file:
+def write_to_html(article_list, path='selected_articles.html'):
+    with io.open(path, 'w',  encoding='utf8') as articles_file:
         for article in article_list:
             articles_file.write(''.join(['<h1>', article.get('title'), '</h1>']))
             articles_file.write(''.join(['<div>', article.get('text'), '</div>']))
@@ -90,14 +90,15 @@ class ArticleDataBase:
                 print current_article.get('title')
                 print current_article.get('text')
         else:
-            write_to_html(selected_articles, path)
+            path_html = '.'.join([path, 'html'])
+            write_to_html(selected_articles, path_html)
 
     def filter_titles(self, request, search_type):
         result = []
         for article in self.json_data.get('articles'):
             if (request in article.get('title')) or\
                (request in article.get('text') and search_type == 'title_and_text'):
-                result.append(article)  # TODO: find a better condition
+                result.append(article)
         return result
 
     def find_articles(self, request, search_type='title_only'):
