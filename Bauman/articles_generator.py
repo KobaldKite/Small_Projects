@@ -52,7 +52,7 @@ def pick_random_topics():
                                random.randint(MIN_TOPIC_NUMBER, MAX_TOPIC_NUMBER)))
 
 
-def write_to_html(article_list, path='selected_articles.html'):
+def write_to_html(article_list, path='selected_articles'):
     with io.open('.'.join([path, 'html']), 'w',  encoding='utf8') as articles_file:
         for article in article_list:
             articles_file.write(''.join(['<h1>', article.get('title'), '</h1>']))
