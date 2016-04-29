@@ -83,8 +83,13 @@ class ArticleDataBase:
 
     def output_articles(self, displayed_page=1, articles_per_page=1, path='console'):
         articles = self.json_data.get('articles')
-        selected_articles = articles[(displayed_page + PAGE_SHIFT) * articles_per_page:
-                                     displayed_page * articles_per_page]
+        try:
+            selected_articles = articles[(displayed_page + PAGE_SHIFT) * articles_per_page:
+                                         displayed_page * articles_per_page]
+        except (IndexError, ValueError):
+            print 'Not a valid number!'
+            selected_articles = []
+
         if path == 'console':
             for current_article in selected_articles:
                 print current_article.get('title')
