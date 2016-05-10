@@ -12,6 +12,10 @@ class Sorter(object):
         self.directory = directory
         self.method = method
 
+    def get_files(self):
+        arguments = '-la' if (self.method == SORT_METHODS[0]) else '-laS'
+        return subprocess.check_output(['ls', arguments, self.directory])
+
     def filter_files(self):
         raw_ls_data = self.get_files()
         ls_data_list = raw_ls_data.splitlines()
@@ -21,10 +25,6 @@ class Sorter(object):
                 item = item.split()
                 file_data_list.append(item)
         return file_data_list
-
-    def get_files(self):
-        arguments = '-la' if (self.method == SORT_METHODS[0]) else '-laS'
-        return subprocess.check_output(['ls', arguments, self.directory])
 
     def sort_files(self):
         sorted_ls_files = []
