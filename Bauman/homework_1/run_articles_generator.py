@@ -68,20 +68,23 @@ class ArticleDataBase:
                            for topics in (pick_random_topics() for article_counter
                                           in xrange(int(article_number)))]}
 
-    def print_to_file(self, path='articles.json'):  # Use 'visual_check' to print data in a human readable format
+    def print_to_file(self, path='articles.json'):
         data = json.dumps(self.json_data, ensure_ascii=False)
         with io.open(path, 'w', encoding='utf8') as json_file:
             json_file.write(data)
 
-    def visual_check(self, path='test.txt'):  # Generates a file that helps with debugging
-        with io.open(path, 'w', encoding='utf8') as test_file:
-            for current_article in self.json_data.get('articles'):
-                test_file.write('\n'.join((current_article.get('title'),
-                                           '\n'.join(current_article.get('topics')),
-                                           current_article.get('text'),
-                                           '\n')))
-
     def output_articles(self, displayed_page=1, articles_per_page=1, path='console'):
+        """
+        Article list gets divided into pages, like a book;
+        each page contains a certain number or articles.
+        For example, if you want to see a third page,
+        where each page contains two articles, you'll see articles 5 and 6.
+        :param displayed_page: page number, starts from 1
+        :param articles_per_page: how many articles are on a page
+        :param path: either 'console' or path to a file without extension;
+               in the second case, an html file containing selected articles is created
+        :return: list of articles on a selected page; empty list if there were errors
+        """
         articles = self.json_data.get('articles')
         try:
             selected_articles = articles[(displayed_page + PAGE_SHIFT) * articles_per_page:
@@ -99,6 +102,13 @@ class ArticleDataBase:
             write_to_html(selected_articles, path_html)
 
     def filter_titles(self, request, search_type):
+        """
+        :param request: symbol combination that is required to present in articles user is looking for
+        :param search_type: where the aforementioned combination is looked for;
+               can be set to either 'title_only' or 'text_and_title'
+        :return: the list of articles containing the 'request' combination in title or text;
+                 empty list if there were errors
+        """
         result = []
         for article in self.json_data.get('articles'):
             if (request in article.get('title')) or\
