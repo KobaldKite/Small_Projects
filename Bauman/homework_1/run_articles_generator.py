@@ -91,8 +91,8 @@ class ArticleDataBase:
         try:
             selected_articles = articles[(displayed_page + PAGE_SHIFT) * articles_per_page:
                                          displayed_page * articles_per_page]
-        except (IndexError, ValueError):
-            print 'Not a valid number!'
+        except IndexError:
+            print 'Out of range!'
             selected_articles = []
 
         if path == 'console':
@@ -114,11 +114,11 @@ class ArticleDataBase:
         result = []
         for article in self.json_data.get('articles'):
             if (request in article.get('title')) or\
-               (request in article.get('text') and search_type == 'title_and_text'):
+               (request in article.get('text') and search_type == SEARCH_TYPES[1]):
                 result.append(article)
         return result
 
-    def find_articles(self, request, search_type='title_only'):
+    def find_articles(self, request, search_type=SEARCH_TYPES[0]):
         if search_type in SEARCH_TYPES:
             return self.filter_titles(request, search_type)
         else:
