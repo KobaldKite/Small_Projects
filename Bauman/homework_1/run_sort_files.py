@@ -6,6 +6,7 @@ SORT_METHODS = [
     'honest',
     'cheat'
 ]
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -15,6 +16,11 @@ def get_files(directory, method):
 
 
 def filter_files(directory, method):
+    """
+    First, the directories got by '-ls' are ignored;
+    then, the result strings are divided into lists
+    :return: list (elements are files) of lists (elements are file properties, e.g. size, name, etc.)
+    """
     raw_ls_data = get_files(directory, method)
     ls_data_list = raw_ls_data.splitlines()
     file_data_list = []
@@ -26,6 +32,13 @@ def filter_files(directory, method):
 
 
 def sort_files(directory=CURRENT_DIR, method=SORT_METHODS[0]):
+    """
+    :param directory: path to the directory, files in which need to be shown in size order
+    :param method: either 'honest' or 'cheat'; 'honest' uses program sort, 'cheat' uses system sort
+    :return: if 'honest': a list of strings, where each string contains full info on each file
+             if 'cheat': a list of lists, where each inner list
+                         contains full set of file parameters as strings
+    """
     sorted_ls_files = []
     ls_files = filter_files(directory, method)
     if method == SORT_METHODS[0]:

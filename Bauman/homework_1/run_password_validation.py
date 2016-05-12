@@ -12,7 +12,7 @@ def validate(password):
         if not digit:
             digit = letter.isdigit()
         if not symbol:
-            symbol = letter in ('@', '?', '#', '$', '%', '&', '*', '_', '-')
+            symbol = letter in ('@', '?', '#', '$', '%', '!', '*', '_', '-')
         if letter_count < 8:
             letter_count += 1
         if upper and lower and digit and symbol and (letter_count == 8):

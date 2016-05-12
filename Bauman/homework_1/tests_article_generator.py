@@ -1,7 +1,7 @@
 import unittest
 import os
 import io
-import articles_generator
+import run_articles_generator
 
 ARTICLE_COUNT = 3
 
@@ -12,10 +12,15 @@ ARTICLE_DATABASE = {'articles': [
     {'title': u'bb', 'text': u'ac', 'topics': 'astronomy'},
     {'title': u'ac', 'text': u'cc', 'topics': 'astronomy'}]}
 
+SEARCH_TYPES = [
+    'title_only',
+    'title_and_text'
+]
+
 
 class TestGeneral(unittest.TestCase):
     def setUp(self):
-        self.article_database = articles_generator.ArticleDataBase(ARTICLE_COUNT)
+        self.article_database = run_articles_generator.ArticleDataBase(ARTICLE_COUNT)
         self.file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_file')
         self.path_json = '.'.join([self.file_path, 'json'])
         self.path_html = '.'.join([self.file_path, 'html'])
@@ -29,7 +34,7 @@ class TestGeneral(unittest.TestCase):
     def test_print_to_file(self):
         self.article_database.print_to_file(self.path_json)
         with io.open(self.path_json) as json_file:
-            data = articles_generator.json.load(json_file)
+            data = run_articles_generator.json.load(json_file)
             self.assertIsInstance(data.get('articles'), list)
             for article_number in xrange(ARTICLE_COUNT):
                 self.assertIsInstance(data.get('articles')[article_number].get('text'), unicode)
@@ -40,10 +45,10 @@ class TestGeneral(unittest.TestCase):
     def test_filter_titles(self):
         self.article_database.json_data = ARTICLE_DATABASE
         self.assertEqual(
-            self.article_database.filter_titles('b', 'title_only'),
+            self.article_database.filter_titles('b', SEARCH_TYPES[0]),
             ARTICLE_DATABASE.get('articles')[2:4])
         self.assertEqual(
-            self.article_database.filter_titles('b', 'title_and_text'),
+            self.article_database.filter_titles('b', SEARCH_TYPES[1]),
             ARTICLE_DATABASE.get('articles')[1:4])
 
     def test_output_articles(self):

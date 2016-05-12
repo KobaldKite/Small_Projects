@@ -1,0 +1,1 @@
+Here, you'll notice several folders, each of them called 'homework_X'. &&&& To learn more about each homework, go to the corresponding folder and read the readme file there. If you are interested in the original problem formulation, read the task\_description file.

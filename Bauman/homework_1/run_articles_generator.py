@@ -23,10 +23,12 @@ AVAILABLE_ARTICLE_THEMES = [
     'chemistry',
     'estetica'
 ]
+
 SEARCH_TYPES = [
     'title_only',
     'title_and_text'
 ]
+
 MIN_TOPIC_NUMBER = 1
 MAX_TOPIC_NUMBER = 3  # Every article can have up to three themes
 PAGE_SHIFT = -1  # Required to find the right number of articles, used in list slices.
@@ -128,8 +130,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', action='store', dest='article_number', default=10)
     parser.add_argument('-p', action='store', dest='path', default='console')
-    parser.add_argument('-dp', action='store', dest='displayed_page', default='1')
-    parser.add_argument('-ap', action='store', dest='articles_per_page', default='0')
+    parser.add_argument('-dp', action='store', dest='displayed_page', default=1)
+    parser.add_argument('-ap', action='store', dest='articles_per_page', default=0)
     parser.add_argument('-r', action='store', dest='request', default='')
     parser.add_argument('-s', action='store', dest='search_type', default='title_only')
     return parser.parse_args()
@@ -137,14 +139,19 @@ def parse_arguments():
 
 def main():
     arguments = parse_arguments()
-    print arguments
-
-    articles = ArticleDataBase(arguments.article_number)
-    articles.print_to_file()
-    articles.output_articles(int(arguments.displayed_page),
-                             int(arguments.articles_per_page),
-                             arguments.path)
-    articles.find_articles(arguments.request, arguments.search_type)
+    try:
+        int(arguments.article_number)
+        int(arguments.displayed_page)
+        int(arguments.articles_per_page)
+    except ValueError:
+        print 'Arguments -n, -da, -ap must be integers'
+    else:
+        articles = ArticleDataBase(arguments.article_number)
+        articles.print_to_file()
+        articles.output_articles(int(arguments.displayed_page),
+                                 int(arguments.articles_per_page),
+                                 arguments.path)
+        articles.find_articles(arguments.request, arguments.search_type)
 
 
 if __name__ == '__main__':

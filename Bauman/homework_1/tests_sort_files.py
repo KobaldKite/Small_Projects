@@ -1,11 +1,19 @@
 import unittest
 import os
 import shutil
-import sort_files
+import run_sort_files
 
+SORT_METHODS = [
+    'honest',
+    'cheat'
+]
 
 class TestGeneral(unittest.TestCase):
     def setUp(self):
+        """
+        Four files of different size are created.
+        In size descending order, they are a > d > c > b.
+        """
         self.temp_dir_name = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'to_sort')
         if not os.path.exists(self.temp_dir_name):
             os.makedirs(self.temp_dir_name)
@@ -19,19 +27,18 @@ class TestGeneral(unittest.TestCase):
         shutil.rmtree(self.temp_dir_name)
 
     def check_sorted(self, method):
-        sorter = sort_files.Sorter(self.temp_dir_name, method)
-        sorted_files = sorter.sort_files()
-        if method not in ('honest', 'cheat'):
+        sorted_files = run_sort_files.sort_files(self.temp_dir_name, method)
+        if method not in SORT_METHODS:
             self.assertEqual(sorted_files, -1)
         else:
             self.assertEqual(sorted_files[0][-1], 'a')
             self.assertEqual(sorted_files[2][-1], 'c')
 
     def test_honest(self):
-        self.check_sorted('honest')
+        self.check_sorted(SORT_METHODS[0])
 
     def test_cheat(self):
-        self.check_sorted('cheat')
+        self.check_sorted(SORT_METHODS[1])
 
     def test_wrong_method(self):
         self.check_sorted('wrong_argument')
