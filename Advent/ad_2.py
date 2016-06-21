@@ -15,6 +15,7 @@ def parse_size_file(file_path):
             sizes_list = [[int(size) for size in line.split('x')] for line in string_list]
         except ValueError:
             print 'Not possible to convert data to integer!'
+            return -1
         else:
             return sizes_list
 
@@ -40,7 +41,7 @@ def wrap_function(sizes, task_type=TYPE[0]):
 def check_negative(sizes):
     for size in sizes:
         if size <= 0:
-            print 'Some dimensions are negative. Such boxes will be ignored.'
+            print 'Some dimensions are not natural numbers. Such boxes will be ignored.'
             return -1
     return 0
 
