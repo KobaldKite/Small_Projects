@@ -8,21 +8,32 @@ TYPE = {
 
 TURN_SHIFT = -1
 
+PARSE_INSTRUCTIONS = {
+    '>': [0, 1],
+    '<': [0, -1],
+    '^': [1, 0],
+    'v': [-1, 0]
+}
+
 
 def parse_direction(direction):
-    try:
-        return {
-            '>': [0, 1],
-            '<': [0, -1],
-            '^': [1, 0],
-            'v': [-1, 0]
-        }.get(direction)
-    except KeyError:
-        print 'Some directions are not clear.' \
-              'Please make sure directions are ^ > v <'
+    """
+    :param direction: a symbol, > v ^ < for moving in one of four directions
+    :return: increase in coordinates, two-dimensional vector, [x, y]
+    If the given direction is an incorrect symbol, Santa doesn't move,
+    but the turn is given to the next Santa
+    """
+    if direction not in PARSE_INSTRUCTIONS.values():
+        print 'Some directions are in a wrong format.\
+               Such directions will be ignored.'
+    return PARSE_INSTRUCTIONS.get(direction, [0, 0])
 
 
 class Santa(object):
+    """
+    Santa knows where he is and what deliveries he has made.
+    He can move, automatically adding the new location to his list of delivery addresses.
+    """
     def __init__(self):
         self.location = (0, 0)
         self.deliveries = [(0, 0), ]
@@ -37,6 +48,11 @@ class Santa(object):
 
 
 class DeliveryPlan(object):
+    """
+    Delivery Plan is the schedule Santas follow.
+    It contains the number of Santas involved and gives them directions to go to.
+    Delivery Plan can also count deliveries made by all Santas together.
+    """
     def __init__(self, task_type):
         self.santa_count = TYPE[task_type]
         self.santas = [Santa() for count in xrange(self.santa_count)]
