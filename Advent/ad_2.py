@@ -21,9 +21,20 @@ def parse_size_file(file_path):
 
 
 def wrap_boxes(size_list, task_type=TYPE[0]):
+    """
+    The only function user really needs to use.
+    Calculates the required material depending on the list os sizes and type of wrapping.
+    :param size_list: three-dimensional vector
+    :param task_type: SILVER for paper, GOLD for ribbon and bow
+    :return: the amount of material needed
+    """
     material = 0
-    for sizes in size_list:
-        material += wrap_function(sizes, task_type)
+    try:
+        for sizes in size_list:
+            material += wrap_function(sizes, task_type)
+    except TypeError:
+        print 'Not possible to process data!'
+        return -1
     return material
 
 
