@@ -49,7 +49,7 @@ class TestGeneral(unittest.TestCase):
     def tearDown(self):
         clear()
 
-    def test_wrap(self):
+    def test_whole(self):
         for temp_file_name, sizes_sample in zip(TEMP_FILE_NAMES, SIZES_SAMPLES):
             print temp_file_name
             sizes_list = ad_2.parse_size_file(temp_file_name)

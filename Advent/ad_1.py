@@ -15,7 +15,7 @@ class Santa(object):
         self.location = 0
 
     def do_the_job(self, file_path):
-        directions = parse_instruction_file(file_path)
+        directions = parse_input_file(file_path)
         return self.follow_directions(directions)
 
     def follow_directions(self, directions):
@@ -52,7 +52,7 @@ class Santa(object):
             return self.directions_taken
 
 
-def parse_instruction_file(file_path):
+def parse_input_file(file_path):
     with open(file_path, 'r') as input_file:
         return input_file.read().strip("\n")
 

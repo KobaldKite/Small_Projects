@@ -8,7 +8,7 @@ TYPE = (
 )
 
 
-def parse_size_file(file_path):
+def parse_input_file(file_path):
     with open(file_path, 'r') as input_file:
         string_list = input_file.read().strip('\n').split('\n')
         try:
@@ -79,7 +79,7 @@ def main():
     parser.add_argument('-f', action='store', dest='file_path')
     parser.add_argument('-t', action='store', dest='task_type', default='SILVER')
     args = parser.parse_args()
-    sizes_list = parse_size_file(args.file_path)
+    sizes_list = parse_input_file(args.file_path)
     print wrap_boxes(sizes_list, args.task_type)
 
 

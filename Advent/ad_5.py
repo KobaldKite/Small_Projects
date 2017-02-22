@@ -23,6 +23,7 @@ def file_analyze(filename, task_type):
         else:
             print "Wrong task type! Please use either 'SILVER' or 'GOLD'!"
         print 'There is %d nice strings.' % nice_count
+        return nice_count
 
 
 def full_check_silver(string):

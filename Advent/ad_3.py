@@ -58,7 +58,7 @@ class DeliveryPlan(object):
         self.santas = [Santa() for count in xrange(self.santa_count)]
 
     def do_the_job(self, file_path):
-        directions = parse_directions_file(file_path)
+        directions = parse_input_file(file_path)
         return self.follow_directions(directions)
 
     def follow_directions(self, directions):
@@ -81,7 +81,7 @@ class DeliveryPlan(object):
         return delivery_count
 
 
-def parse_directions_file(file_path):
+def parse_input_file(file_path):
     with open(file_path, 'r') as input_file:
         return input_file.read().strip("\n")
 

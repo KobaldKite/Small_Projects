@@ -7,6 +7,8 @@ TWO_WORDS = 2
 COMMAND_SHIFT_1 = -1
 COMMAND_SHIFT_2 = 2
 GRID_SHIFT = 1
+GRID_HEIGHT = 1000
+GRID_WIDTH = 1000
 
 TASK_TYPE = (
     'SILVER',
@@ -21,7 +23,7 @@ COMMAND = (
 
 
 class LightGrid(object):
-    def __init__(self, task_type=TASK_TYPE[0], sizes=(1000, 1000)):
+    def __init__(self, task_type=TASK_TYPE[0], sizes=(GRID_HEIGHT, GRID_WIDTH)):
         self.sizes = sizes
         self.grid = [False] * sizes[0] * sizes[1]  # Everything is turned off
         if task_type == TASK_TYPE[0]:
@@ -39,7 +41,7 @@ class LightGrid(object):
                                   y * self.sizes[0] + point_2[0] + GRID_SHIFT):
                 self.grid[element] = operation(self.grid[element])
 
-    def parse_instruction_file(self, file_name):
+    def parse_input_file(self, file_name):
         with open(file_name) as input_file:
             instructions = input_file.read().splitlines()
             self.follow_instructions(instructions)

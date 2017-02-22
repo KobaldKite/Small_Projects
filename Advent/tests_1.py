@@ -36,7 +36,7 @@ class TestGeneral(unittest.TestCase):
     def tearDown(self):
         clear()
 
-    def test_general(self):
+    def test_whole(self):
         for temp_file, direction_sample in zip(TEMP_FILE_NAMES, DIRECTIONS_SAMPLES):
             for task_type in ad_1.TYPE:
                 santa = ad_1.Santa(task_type)
